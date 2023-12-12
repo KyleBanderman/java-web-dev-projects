@@ -1,21 +1,29 @@
 package org.launchcode;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 public class MenuItem {
+    //fields
     private double price;
     private String name;
     private String description;
     private String category;
     private boolean newItem;
-    private Date dateAddedToMenu;
+    private LocalDate dateAddedToMenu;
+    private int menuItemId;
 
-    public MenuItem(double price, String name, String description, String category) {
-        this.price = price;
+    //static variables
+    private static int nextMenuId = 1;
+
+    public MenuItem(String name, double price, String description, String category) {
         this.name = name;
+        this.price = price;
         this.description = description;
         this.category = category;
-        this.dateAddedToMenu = new Date();
         this.newItem = true;
+        this.dateAddedToMenu = LocalDate.now();
+        this.menuItemId = getNextMenuId();
     }
 
     //accessors
@@ -37,5 +45,37 @@ public class MenuItem {
 
     public void setNewItem(boolean newItem) { this.newItem = newItem; }
 
-    public Date getDateAddedToMenu() { return dateAddedToMenu; }
+    public LocalDate getDateAddedToMenu() { return dateAddedToMenu; }
+
+    //update IDs
+    private static int getNextMenuId() {
+        int id = nextMenuId;
+        nextMenuId++;
+        return id;
+    }
+
+    //Override default methods
+    @Override
+    public boolean equals(Object toBeCompared) {
+        if (this == toBeCompared) {
+            return true;
+        }
+        if (toBeCompared == null) {
+            return false;
+        }
+        if (getClass() != toBeCompared.getClass()) {
+            return false;
+        }
+        MenuItem aMenuItem = (MenuItem) toBeCompared;
+        return aMenuItem.menuItemId == menuItemId;
+    }
+
+    //instance methods
+    //TODO: isNewMenuItem()
+    public void isNewMenuItem() {
+        LocalDate twoWeekDate = dateAddedToMenu.plusWeeks(2);
+        if (dateAddedToMenu.isAfter(twoWeekDate)) {
+            this.newItem = false;
+        }
+    }
 }
